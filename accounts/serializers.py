@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "password", "last_name", "first_name", "email", "image"]
+        fields = ["username", "password", "last_name", "first_name", "email"]
 
     def validate_username(self, username):
         user = User.objects.filter(username=username).first()
@@ -32,7 +32,7 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=150)
 
     def validate(self, data):
-        user = UserProfile.objects.filter(username=data.get("username")).first()
+        user = User.objects.filter(username=data.get("username")).first()
         if not user:
             raise serializers.ValidationError("Username Not Found")
         return data
