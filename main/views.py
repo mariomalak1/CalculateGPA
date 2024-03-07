@@ -7,17 +7,28 @@ from .models import Subject
 from .serializers import SubjectSerializer
 # Create your views here.
 
-
-# get all subjects with same name pattern
-def getAllRegisterSubjects(request):
-    pass
-
-
-@api_view(["GET"])
-def getAllRegisterSubjects(request):
+@api_view(["GET", "POST"])
+def registerSubjects(request):
     token_ = CustomAuthentication.get_token_or_none(request)
     if not token_:
         return Response({"error": "you must authorized"}, status=status.HTTP_401_UNAUTHORIZED)
-    subjects = Subject.objects.all()
-    serializer = SubjectSerializer(subjects, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+
+    if request.method == "GET":
+        subjects = Subject.objects.filter(student_id=token_.user_id).all()
+        serializer = SubjectSerializer(subjects, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == "POST":
+        serializer = SubjectSerializer(data=request.data)
+        if serializer.is_valid():
+            sub = serializer.create_subject(serializer.validated_data)
+            return Response(sub, )
+
+
+
+
+
+@api_view(["GET"])
+def getStatistics(request):
+    pass
+

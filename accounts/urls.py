@@ -8,4 +8,5 @@ urlpatterns = [
 	path("login/", views.LoginView.as_view(), name="login"),
 	path("logout/", views.logout, name="logout"),
 	path("check_token/", views.token_check_found, name="token_check_found"),
+	path("calculateGpa/", views.calculateGpa, name="calculateGpa"),
 ]

@@ -6,8 +6,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 
-from .serializers import RegisterSerializer, LoginSerializer
-
+from .serializers import RegisterSerializer, LoginSerializer, StudnetSerializer
+from .models import Student
 # Create your views here.
 
 class CustomAuthentication:
@@ -79,3 +79,15 @@ def token_check_found(request):
         return Response(status=status.HTTP_202_ACCEPTED)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["GET"])
+def calculateGpa(request):
+    token_ = CustomAuthentication.get_token_or_none(request)
+    if not token_:
+        return Response({"error": "you must authorized"}, status=status.HTTP_401_UNAUTHORIZED)
+    student = Student.objects.get(id=token_.user_id)
+    # calculate gpa and save it
+    student.calculate_Gpa()
+    serializer = StudnetSerializer(student)
+    return Response(serializer.data, status=status.HTTP_200_OK)

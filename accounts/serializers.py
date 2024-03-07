@@ -1,15 +1,16 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login as django_login
-from django.contrib.auth.models import User
+from .models import Student
+# from django.contrib.auth.models import User
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = Student
         fields = ["username", "password", "last_name", "first_name", "email"]
 
     def validate_username(self, username):
-        user = User.objects.filter(username=username).first()
+        user = Student.objects.filter(username=username).first()
         if user:
             raise serializers.ValidationError("this username is already taken")
         return username
@@ -21,10 +22,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         user_.save()
         return user_
 
-class UserSerializer(serializers.ModelSerializer):
+class StudnetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ["username", "last_name", "first_name", "email", "image"]
+        model = Student
+        fields = ["username", "Gpa"]
 
 
 class LoginSerializer(serializers.Serializer):
@@ -32,7 +33,7 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=150)
 
     def validate(self, data):
-        user = User.objects.filter(username=data.get("username")).first()
+        user = Student.objects.filter(username=data.get("username")).first()
         if not user:
             raise serializers.ValidationError("Username Not Found")
         return data
