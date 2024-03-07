@@ -3,9 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from Authentication.views import UserAuthentication
+from Authentication.serializer import UserSerializer
+from Authentication.models import Student
+
 from .models import Subject
 from .serializers import SubjectSerializer
-from Authentication.serializer import UserSerializer
+
 # Create your views here.
 
 @api_view(["GET", "POST"])
@@ -41,7 +44,7 @@ def getStatistics(request):
 
 @api_view(["GET"])
 def calculateGpa(request):
-    token_ = CustomAuthentication.get_token_or_none(request)
+    token_ = UserAuthentication.get_token_or_none(request)
     if not token_:
         return Response({"error": "you must authorized"}, status=status.HTTP_401_UNAUTHORIZED)
     student = Student.objects.get(id=token_.user_id)

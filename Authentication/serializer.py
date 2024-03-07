@@ -35,7 +35,7 @@ class ResetPasswordSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = "__all__"
+        fields = ["email", "Gpa"]
 
     def is_valid(self, raise_exception=False):
         if self.partial:

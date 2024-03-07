@@ -76,11 +76,12 @@ class UserAuthentication:
         data = request.data
         serializer = RegisterSerializer(data=data)
         if serializer.is_valid():
-            user = Student.objects.filter(email=serializer.data.get("email")).first()
+            email = serializer.data.get("email")
+            user = Student.objects.filter(email=email).first()
             if user:
                 return Response({"error":"this email is already register"}, status=status.HTTP_406_NOT_ACCEPTABLE)
             if serializer.data.get("rePassword") == serializer.data.get("password"):
-                user = Student(email=serializer.data.get("email"))
+                user = Student(email=email, username=email)
                 user.set_password(serializer.data.get("password"))
                 user.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)

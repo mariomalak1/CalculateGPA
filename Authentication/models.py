@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class Student(AbstractUser):
-    email = models.EmailField(blank=False, null=False)
+    email = models.EmailField(blank=False, null=False, unique=True)
     Gpa = models.FloatField(null=True, blank=True)
 
     def calculate_Gpa(self):
@@ -19,7 +19,10 @@ class Student(AbstractUser):
             points += subject.calculateNumberOfPoints()
             hours += subject.creadit_Hours
 
-        self.Gpa = points / hours
+        try:
+            self.Gpa = points / hours
+        except:
+            self.Gpa = 0
         self.save()
 
     def __str__(self):
