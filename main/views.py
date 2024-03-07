@@ -9,6 +9,8 @@ from Authentication.models import Student
 from .models import Subject
 from .serializers import SubjectSerializer
 
+from project.utilis import defualtResponse, getDataFromPaginator
+
 # Create your views here.
 
 @api_view(["GET", "POST"])
@@ -19,16 +21,19 @@ def registerSubjects(request):
 
     if request.method == "GET":
         subjects = Subject.objects.filter(student_id=token_.user_id).all()
-        serializer = SubjectSerializer(subjects, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        allData = getDataFromPaginator(request, subjects)
+        return defualtResponse(allData, SubjectSerializer)
 
     elif request.method == "POST":
-        serializer = SubjectSerializer(data=request.data)
+        data = request.data.copy()
+        data["student"] = token_.user_id
+        serializer = SubjectSerializer(data=data)
         if serializer.is_valid():
-            sub = serializer.create_subject(serializer.validated_data)
-            return Response(sub, )
-
-
+            subject = serializer.save()
+            serializer = SubjectSerializer(subject)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

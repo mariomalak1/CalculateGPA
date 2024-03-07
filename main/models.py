@@ -10,10 +10,10 @@ class Subject(models.Model):
     YearNumber = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7))
     subject_name = models.CharField(max_length=120, null=False, blank=False)
     grade = models.FloatField(null=False, blank=False, choices=gradeChosies)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     term = models.PositiveSmallIntegerField(null=False, blank=False, choices=TermNumber)
     year = models.PositiveSmallIntegerField(null=False, blank=False, choices=YearNumber)
     creadit_Hours = models.PositiveSmallIntegerField(null=False, blank=False)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     def calculateNumberOfPoints(self):
         return self.grade * self.creadit_Hours
