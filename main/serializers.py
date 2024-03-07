@@ -2,15 +2,15 @@ from rest_framework import serializers
 
 from .models import Subject
 
+from Authentication.serializer import UserSerializer
+
+
 class SubjectSerializer(serializers.ModelSerializer):
-    # student = serializers.SerializerMethodField()
+    student = serializers.SerializerMethodField()
 
-    # def get_student(self, data):
-    #     return "mario"
-
-    # def create_subject(self, data_):
-    #     self.validated_data["student"] = data_.get("student")
-    #     return self.save()
+    def get_student(self, subject):
+        serializer = UserSerializer(subject.student)
+        return serializer.data
 
     class Meta:
         model = Subject
