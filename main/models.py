@@ -15,7 +15,7 @@ class Subject(models.Model):
     term = models.PositiveSmallIntegerField(null=False, blank=False, choices=TermNumber)
     year = models.PositiveSmallIntegerField(null=False, blank=False, choices=YearNumber)
     creadit_Hours = models.PositiveSmallIntegerField(null=False, blank=False)
-    ref = models.SlugField(null=False, blank=False, unique=True)
+    ref = models.SlugField(null=False, blank=True, unique=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     def calculateNumberOfPoints(self):

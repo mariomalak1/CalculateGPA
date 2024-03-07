@@ -9,7 +9,7 @@ from Authentication.serializer import UserSerializer
 from Authentication.models import Student
 
 from .models import Subject
-from .serializers import SubjectSerializer
+from .serializers import SubjectSerializer, NormalSubjectSerializer
 
 from project.utilis import defualtResponse, getDataFromPaginator
 
@@ -24,7 +24,7 @@ class SubjectView(APIView):
 
         data = request.data.copy()
         data["student"] = token_.user_id
-        serializer = SubjectSerializer(data=data)
+        serializer = NormalSubjectSerializer(data=data)
         if serializer.is_valid():
             subject = serializer.save()
             serializer = SubjectSerializer(subject)
@@ -33,26 +33,19 @@ class SubjectView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # get all subjects
-    def get(self, request):
+    def get(self, request, ref=None):
         token_ = UserAuthentication.get_token_or_none(request)
         if not token_:
             return Response({"error": "you must authorized"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        subjects = Subject.objects.filter(student_id=token_.user_id).all()
-        allData = getDataFromPaginator(request, subjects)
-        return defualtResponse(allData, SubjectSerializer)
-
-    # get specific subject
-    @staticmethod
-    @api_view(["GET"])
-    def getSpecificSubject(request, ref):
-        token_ = UserAuthentication.get_token_or_none(request)
-        if not token_:
-            return Response({"error": "you must authorized"}, status=status.HTTP_401_UNAUTHORIZED)
-
-        subject = self.get_object(ref)
-        serializer = SubjectSerializer(subject)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if ref:
+            subject = self.get_object(ref)
+            serializer = SubjectSerializer(subject)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            subjects = Subject.objects.filter(student_id=token_.user_id).all()
+            allData = getDataFromPaginator(request, subjects)
+            return defualtResponse(allData, SubjectSerializer)
 
     def get_object(self, ref):
         try:
