@@ -6,7 +6,7 @@ from .models import Student
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ["email", "name", "password", "phone", "rePassword"]
+        fields = ["email", "password", "rePassword"]
 
     rePassword = serializers.CharField(required=True)
 
@@ -35,7 +35,7 @@ class ResetPasswordSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ["email", "name", "phone"]
+        fields = "__all__"
 
     def is_valid(self, raise_exception=False):
         if self.partial:

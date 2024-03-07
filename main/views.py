@@ -5,6 +5,7 @@ from rest_framework import status
 from Authentication.views import UserAuthentication
 from .models import Subject
 from .serializers import SubjectSerializer
+from Authentication.serializer import UserSerializer
 # Create your views here.
 
 @api_view(["GET", "POST"])
@@ -30,8 +31,13 @@ def registerSubjects(request):
 
 @api_view(["GET"])
 def getStatistics(request):
-    pass
-
+    token_ = CustomAuthentication.get_token_or_none(request)
+    if not token_:
+        return Response({"error": "you must authorized"}, status=status.HTTP_401_UNAUTHORIZED)
+    student = Student.objects.get(id=token_.user_id)
+    student.calculate_Gpa()
+    serializer = StudnetSerializer(student)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def calculateGpa(request):
@@ -41,5 +47,5 @@ def calculateGpa(request):
     student = Student.objects.get(id=token_.user_id)
     # calculate gpa and save it
     student.calculate_Gpa()
-    serializer = StudnetSerializer(student)
+    serializer = UserSerializer(student)
     return Response(serializer.data, status=status.HTTP_200_OK)

@@ -54,7 +54,7 @@ class UserAuthentication:
         serializer = SignInSerializer(data = request.data)
         if serializer.is_valid():
             email = serializer.validated_data.get("email")
-            user = User.objects.filter(email=email).first()
+            user = Student.objects.filter(email=email).first()
             if user:
                 user = authenticate(request, username=user.username, password=serializer.validated_data.get("password"))
                 if user:
@@ -76,8 +76,11 @@ class UserAuthentication:
         data = request.data
         serializer = RegisterSerializer(data=data)
         if serializer.is_valid():
+            user = Student.objects.filter(email=serializer.data.get("email")).first()
+            if user:
+                return Response({"error":"this email is already register"}, status=status.HTTP_406_NOT_ACCEPTABLE)
             if serializer.data.get("rePassword") == serializer.data.get("password"):
-                user = User(email=serializer.data.get("email"))
+                user = Student(email=serializer.data.get("email"))
                 user.set_password(serializer.data.get("password"))
                 user.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -142,7 +145,7 @@ class UserAuthentication:
         data = request.data
         serializer = ForgetPassword(data=data)
         if serializer.is_valid():
-            user = User.objects.filter(email=serializer.validated_data.get("email")).first()
+            user = Student.objects.filter(email=serializer.validated_data.get("email")).first()
             if user:
                 if user.is_authenticated:
                     logout(request)
@@ -189,7 +192,7 @@ class UserAuthentication:
         serializer = ResetPasswordSerializer(data=data)
         if serializer.is_valid():
             email = serializer.validated_data.get("email")
-            user = User.objects.filter(email=email).first()
+            user = Student.objects.filter(email=email).first()
             if not user:
                 return Response({"errors":"this email not registred before"}, status=status.HTTP_400_BAD_REQUEST)
             resetCode = ResetCode.objects.filter(resetUser=user).first()
