@@ -1,6 +1,6 @@
 from django.db import models
+from Authentication.models import Student
 # from django.contrib.auth.models import User as DjangoUser
-from accounts.models import Student
 
 # Create your models here.
 
