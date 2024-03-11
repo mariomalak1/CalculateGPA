@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,8 +43,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
 
+    "Authentication",
     "main",
-    "accounts",
 ]
 
 
@@ -130,6 +131,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+AUTH_USER_MODEL = "Authentication.Student"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -147,3 +149,12 @@ CORS_ALLOW_CREDENTIALS = True
 # Set the allowed origins for your frontend application
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',]
+
+
+# send email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("ECommercePassword")
